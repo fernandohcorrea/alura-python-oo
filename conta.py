@@ -14,19 +14,28 @@ class Conta :
     def depositar(self, valor) :
         self.__saldo += valor
 
-    def sacar(self, valor) :
+    def __pode_sacar(self, valor) :
         novo_saldo = self.__saldo - valor
         if(novo_saldo > (self.__limit * -1)) :
-            self.__saldo = novo_saldo
             return True
         else :
-            print("Saque abaixo do seu limite({})".format(self.__limit))
+            print("Opera abaixo do seu limite({})".format(self.__limit))
+            return False
+
+    def sacar(self, valor) :
+        if ( self.__pode_sacar(valor) ) :
+            self.__saldo -= valor
+            return True
+        else :
             return False
 
     def transferir(self, valor, conta_destino) :
-        result = self.sacar(valor)
-        if ( result ) :
+        if self.sacar(valor) :
             conta_destino.depositar(valor)
+
+    @staticmethod
+    def codigo_banco() :
+        return "001"
 
     @property
     def titular(self) :
@@ -54,7 +63,9 @@ if ( __name__ == '__main__') :
 
     conta2 = Conta(2, 'Prof. Nico', 600.0)
 
-    conta.transferir(300.00, conta2)
+    conta.transferir(3000.00, conta2)
 
     conta.extrato()
     conta2.extrato()
+
+    print(Conta.codigo_banco())
